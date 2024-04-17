@@ -1,6 +1,7 @@
 """Healthcare Chatbot file for ensuring the package is executable
 as `healthcare-chatbot` and `python -m healthcare_chatbot`
 """
+
 import importlib
 from pathlib import Path
 

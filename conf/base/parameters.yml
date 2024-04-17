@@ -1,0 +1,3 @@
+vector_db:
+  path: db
+  collection_name: healthcare

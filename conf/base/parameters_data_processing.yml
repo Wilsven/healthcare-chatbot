@@ -1,0 +1,28 @@
+# This is a boilerplate parameters config generated for pipeline 'data_processing'
+# using Kedro 0.19.3.
+#
+# Documentation for this file format can be found in "Parameters"
+# Link: https://docs.kedro.org/en/0.19.3/configuration/parameters.html
+websites:
+  - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetes-treatment-capsules--tablets
+  - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetic_foot_ttsh
+  - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetic-ulcer
+  - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetes-treatment-insulin
+  - https://www.healthxchange.sg/diabetes/living-well-diabetes/diabetes-recommended-vaccinations-children-adults
+
+pdfs_dir_path: data/01_raw/pdfs
+
+splitter:
+  chunk_size: 1000
+  chunk_overlap: 100
+  separators:
+    - "\n\n"
+    - "\n"
+    - "."
+    - "!"
+    - "?"
+    - ","
+    - " "
+    - ""
+
+embedding_model_name: text-embedding-ada-002

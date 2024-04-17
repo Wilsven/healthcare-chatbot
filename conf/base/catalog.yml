@@ -1,0 +1,7 @@
+docs_dict:
+  type: json.JSONDataset
+  filepath: data/02_intermediate/websites.json
+
+pdfs_dict:
+  type: json.JSONDataset
+  filepath: data/02_intermediate/pdfs.json
