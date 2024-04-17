@@ -5,10 +5,10 @@
 # Link: https://docs.kedro.org/en/0.19.3/configuration/parameters.html
 websites:
   - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetes-treatment-capsules--tablets
-  - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetic_foot_ttsh
-  - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetic-ulcer
-  - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetes-treatment-insulin
-  - https://www.healthxchange.sg/diabetes/living-well-diabetes/diabetes-recommended-vaccinations-children-adults
+  # - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetic_foot_ttsh
+  # - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetic-ulcer
+  # - https://www.healthhub.sg/a-z/diseases-and-conditions/diabetes-treatment-insulin
+  # - https://www.healthxchange.sg/diabetes/living-well-diabetes/diabetes-recommended-vaccinations-children-adults
 
 pdfs_dir_path: data/01_raw/pdfs
 
@@ -26,3 +26,6 @@ splitter:
     - ""
 
 embedding_model_name: text-embedding-ada-002
+model_name: gpt-3.5-turbo-0125
+temperature: 0
+max_tokens: 1024

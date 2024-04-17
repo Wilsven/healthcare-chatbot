@@ -15,13 +15,8 @@ from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 
 from healthcare_chatbot.pipelines.data_processing.utils import (
-    SourceType,
-    check_sources,
-    index_new_documents,
-    pdfs_to_docs,
-    update_json,
-    websites_to_docs,
-)
+    SourceType, check_sources, index_new_documents, pdfs_to_docs, update_json,
+    websites_to_docs)
 
 
 def index_websites(
