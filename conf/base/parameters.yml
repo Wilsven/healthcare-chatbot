@@ -1,3 +1,5 @@
+# Contains the path to the vector database with respect
+# to the root of the project and the collection name
 vector_db:
   path: db
   collection_name: healthcare

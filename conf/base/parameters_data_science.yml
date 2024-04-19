@@ -22,5 +22,5 @@ api:
 # If the last index in queries.csv is 238, you have a total of 237 queries since
 # the first row is the header. Then the new `end_index` will be 237 - 1 = 236
 # because Python is a 0-indexing language.
-start_index: 201
-end_index: 236
+start_index: 0
+end_index: 10

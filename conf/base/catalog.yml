@@ -1,3 +1,6 @@
+# Contains the document chunks before indexing
+# into the vector database. Review these JSON files
+# to discover any relevant information to take note of.
 docs_dict:
   type: json.JSONDataset
   filepath: data/02_intermediate/websites.json
@@ -6,14 +9,21 @@ pdfs_dict:
   type: json.JSONDataset
   filepath: data/02_intermediate/pdfs.json
 
+# Contains the queries to evaluate the reponses from.
 queries_file:
   type: pandas.CSVDataset
   filepath: data/03_primary/queries.csv
 
+# This is where the responses from the chatbot will be
+# saved. It also saves the most relevant document extracted
+# from the vector database used as part of the context.
 responses_file:
   type: pandas.CSVDataset
   filepath: data/07_model_output/responses.csv
 
+# Some visualisation reporting to show the
+# most frequent words in the form of a word cloud
+# from the queries.
 wordcloud:
   type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/wordcloud.png

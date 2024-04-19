@@ -1,143 +1,124 @@
 # Healthcare Chatbot
 
-## Overview
+## Problem Statement
 
-### Data Pipeline
+A local healthcare company published multiple articles containing healthcare facts, information, and tips. It wishes to create a conversational chatbot that can address readers' concerns in natural language using information from the trusted articles and in the healthcare context.
 
-![image](docs/external/data_pipeline.png)
+The conversational chatbot should answer readers' queries using only the information from the published articles. Where appropriate, it should adopt an empathetic and understanding tone.
 
-### Postman
+## Directories
 
-The LLM model is wrapped in an API endpoint and Postman was used to evaluate the responses of the model. The following are some query and response pairs:
+- `src/`: Contains project modules and their pipelines.
 
-![image](docs/external/SCR-20240417-qrbh.png)
-![image](docs/external/SCR-20240417-qrij.png)
-![image](docs/external/SCR-20240417-qrqv.png)
+  - `healthcare_chatbot/`: Healthcare Chatbot package.
 
-### FastAPI
+    - `pipelines/`: Contains the data pipelines.
 
-Run the following command in the root of the project. This exposes the FastAPI application at port 8000 on your local machine.
+      - `data_processing/`: Pipeline for data processing.
 
-```
-uvicorn app.main:app --reload --port=8000
-```
+      - `data_science/`: Pipeline for data science.
 
-On Postman, you can then call the `/chat` endpoint as a POST request with the query as the payload. The response will be a JSON containing the query and request pair as shown in the images above.
+- `conf/base/`: Shared project configurations.
 
-## Rules and guidelines
+  - `catalog.yml`: The Data Catalog. For more information, refer [here](conf/README.md).
 
-In order to get the best out of the template:
+  - `parameters.yml`: Configurations for general parameters.
 
-- Don't remove any lines from the `.gitignore` file we provide
-- Make sure your results can be reproduced by following a [data engineering convention](https://docs.kedro.org/en/stable/faq/faq.html#what-is-data-engineering-convention)
-- Don't commit data to your repository
-- Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
+  - `parameters_data_processing.yml`: Configurations for parameters used in the data processing pipeline.
 
-## Create a virtual environment
+  - `parameters_data_science.yml`: Configurations for parameters used in the data science pipeline.
+
+- `conf/local/`: Environment-specific configurations like credentials and API keys (not pushed to git).
+
+  - `credentials.yml`: Configurations for credentials. Please refer to the [Rules and Guidelines](#rules-and-guidelines) section to learn more about best practices with configuring credentials.
+
+- `notebooks/`: Interactive notebooks for data analysis, visualization and prototyping.
+
+- `data/`: Stores raw, intermediate, and processed data.
+
+## Set Up
+
+### 1. Create A Virtual Environment
 
 Create a virtual environment before installing the dependencies required to run this project.
 
 To create a virtual environment, use Anaconda (recommended):
 
+```bash
+conda create -n <ENV_NAME> python=3.10 -y
 ```
-conda create -n <ENV_NAME>  python=3.10 -y
+
+Don't forget to activate the virtual environment before procedding.
+
+```bash
+conda activate <ENV_NAME>
 ```
 
-## How to install dependencies
+### 2. Install Dependencies
 
-Declare any dependencies in `requirements.txt` for `pip` installation.
+The dependencies are located in `requirements.txt` for `pip` installation.
 
-To install them, run:
-
-```
+```bash
 pip install -r requirements.txt
 ```
 
-## How to run your Kedro pipeline
+### 3. Start the Application (FastAPI)
 
-You can run your Kedro project with:
+Before we run the pipelines, start the application so our [`data_science`](#data_science) will be able to call the `/chat` API endpoint to get the response from the chatbot.
 
+```bash
+uvicorn app.main:app --reload --port=8000
 ```
-kedro run
-```
 
-## How to run specific pipeline
+We expose the port 8000 and this is where we will access the API endpoints.
 
-You can run specific pipeline with:
+> **Note:** If you just want to run the [`data_processing`](#data_processing) pipeline, you can skip this step. This step is only necessary for the [`data_science`](#data_science) pipeline.
 
-```
+### 4. (Optional) Testing with Postman
+
+Optionally, you can test the chatbot and evaulate the responses using Postman. The following are some query and response pairs:
+
+![image](docs/external/postman1.png)
+![image](docs/external/postman2.png)
+![image](docs/external/postman3.png)
+
+### 5. Run the Kedro Pipeline
+
+You can run the entire pipeline with a simple `kedro run` however, it is recommended to use `kedro run --nodes="<NODE_NAME>"` or `kedro run --pipeline=<PIPELINE_NAME>` to get a sense of how the pipelines works.
+
+#### `data_processing` <a id="data_processing"></a>
+
+You can run the `data_processing` pipeline by running the following command:
+
+```bash
 kedro run --pipeline=data_processing
 ```
 
-> **Note:** There is only one pipeline called `data_processing` in this project.
+> **Note:** This runs the `data_processing` pipeline which extracts, chunks and indexes the documents from various sources.
 
-## How to run specific nodes
+The image below shows a high level overview of the data processing pipeline.
 
-You can run specific nodes with:
+![image](docs/external/data_processing.png)
 
-```
-kedro run --nodes="index_websites_node"
-kedro run --nodes="index_pdfs_node"
-```
+#### `data_science` <a id="data_science"></a>
 
-> **Note:** There are two nodes which are part of the same pipeline called `data_processing` in this project.
+You can run the `data_science` pipeline by running the following command:
 
-## Project dependencies
-
-To see and update the dependency requirements for your project use `requirements.txt`. Install the project requirements with `pip install -r requirements.txt`.
-
-[Further information about project dependencies](https://docs.kedro.org/en/stable/kedro_project_setup/dependencies.html#project-specific-dependencies)
-
-## How to work with Kedro and notebooks
-
-> Note: Using `kedro jupyter` or `kedro ipython` to run your notebook provides these variables in scope: `catalog`, `context`, `pipelines` and `session`.
->
-> Jupyter, JupyterLab, and IPython are already included in the project requirements by default, so once you have run `pip install -r requirements.txt` you will not need to take any extra steps before you use them.
-
-### Jupyter
-
-To use Jupyter notebooks in your Kedro project, you need to install Jupyter:
-
-```
-pip install jupyter
+```bash
+kedro run --pipeline=data_science
 ```
 
-After installing Jupyter, you can start a local notebook server:
+> **Note:** This runs the `data_science` pipeline which calls the `/chat` API endpoint with a payload containing the query. The response contains the chatbot's response as well as various metadata.
 
-```
-kedro jupyter notebook
-```
+The image below shows a high level overview of the data science pipeline.
 
-### JupyterLab
+![image](docs/external/data_science.png)
 
-To use JupyterLab, you need to install it:
+## Rules and Guidelines <a id="rules-and-guidelines"></a>
 
-```
-pip install jupyterlab
-```
+In order to get the best out of the template:
 
-You can also start JupyterLab:
-
-```
-kedro jupyter lab
-```
-
-### IPython
-
-And if you want to run an IPython session:
-
-```
-kedro ipython
-```
-
-### How to ignore notebook output cells in `git`
-
-To automatically strip out all output cell contents before committing to `git`, you can use tools like [`nbstripout`](https://github.com/kynan/nbstripout). For example, you can add a hook in `.git/config` with `nbstripout --install`. This will run `nbstripout` before anything is committed to `git`.
-
-> _Note:_ Your output cells will be retained locally.
-
-[Further information about using notebooks for experiments within Kedro projects](https://docs.kedro.org/en/develop/notebooks_and_ipython/kedro_and_notebooks.html).
-
-## Package your Kedro project
-
-[Further information about building project documentation and packaging your project](https://docs.kedro.org/en/stable/tutorial/package_a_project.html).
+- Don't remove any lines from the .gitignore file that is provided
+- Make sure your results can be reproduced by following a [data engineering convention](https://docs.kedro.org/en/stable/faq/faq.html#what-is-data-engineering-convention)
+- Don't commit data to your repository
+- Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
