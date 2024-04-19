@@ -1,0 +1,26 @@
+# This is a boilerplate parameters config generated for pipeline 'data_science'
+# using Kedro 0.19.3.
+#
+# Documentation for this file format can be found in "Parameters"
+# Link: https://docs.kedro.org/en/0.19.3/configuration/parameters.html
+api:
+  domain: http://127.0.0.1:8000
+  test_endpoint: /
+  chat_endpoint: /chat
+
+# Hint: Look inside response.csv file to see the index of the latest
+# data. Subtract 1 from it and that would be your new `start_index`.
+
+# For example:
+# If the index of the last row in response.csv is 52. Then the new
+#  `start_index` will be 52 - 1 = 51.
+
+# Note: While the maximum value of `end_index` can be some arbitrarily large
+# number, look inside queries.csv to see the the total number of rows.
+
+# For example:
+# If the last index in queries.csv is 238, you have a total of 237 queries since
+# the first row is the header. Then the new `end_index` will be 237 - 1 = 236
+# because Python is a 0-indexing language.
+start_index: 201
+end_index: 236

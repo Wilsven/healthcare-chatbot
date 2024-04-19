@@ -179,8 +179,7 @@ class SourceType(Enum):
 
 
 def check_sources(
-    original_sources: list[str],
-    source_type: SourceType,
+    input_sources: list[str],
     client: Client,
     collection_name: str,
 ) -> tuple[chromadb.Collection, list[str] | None]:
@@ -188,7 +187,7 @@ def check_sources(
     Check the sources provided against the collection of documents already indexed in ChromaDB.
 
     Args:
-        original_sources (list[str]): A list of sources to check against the collection.
+        input_sources (list[str]): A list of sources to check against the collection.
         source_type (SourceType): An enum representing the type of sources being checked.
         client (Client): A ChromaDB client object.
         collection_name (str): The name of the collection to check against.
@@ -201,31 +200,18 @@ def check_sources(
     Raises:
         TypeError: If source_type is not an instance of the SourceType enum.
     """
-    # Type checking
-    if not isinstance(source_type, SourceType):
-        raise TypeError("`source_type` must be an instance of SourceType Enum")
-
     collection = client.get_collection(name=collection_name)
-    # Get all the websites already in collection
+    # Get all the sources already in collection
     sources = set([metadata["source"] for metadata in collection.get()["metadatas"]])
 
-    if source_type.value == "website":
-        # From the websites, only keep those which do not already appear in
-        # the collection (we do not want to index the same website twice)
-        new_websites = [
-            website for website in original_sources if website not in sources
-        ]
+    # From the input sources, only keep those which do not already appear in
+    # the collection AKA not in the sources (we do not want to index the same
+    # website or PDF twice)
+    new_sources = [
+        input_source for input_source in input_sources if input_source not in sources
+    ]
 
-        return collection, new_websites if new_websites else None
-
-    elif source_type.value == "pdf":
-        # From the PDF paths, only keep those which do not already appear
-        # in the collection (we do not want to index the same website twice)
-        new_pdfs = [
-            pdf_path for pdf_path in original_sources if pdf_path not in sources
-        ]
-
-        return collection, new_pdfs if new_pdfs else None
+    return collection, new_sources if new_sources else None
 
 
 def index_new_documents(
@@ -254,6 +240,54 @@ def index_new_documents(
     Returns:
         dict: A dictionary containing the indexed documents based on the source type.
     """
+
+    def _index_new_documents(
+        original: list[dict],
+        new: list[dict],
+        data_split: list[Document],
+        collection: chromadb.Collection,
+    ) -> dict:
+        """
+        Indexes new documents into a collection based on the source type.
+
+        Args:
+            original (list[dict]): The original list of documents to be updated.
+            new (list[dict]): The new list of documents to be added.
+            data_split (list[Document]): The list of Document objects to be split.
+            collection (chromadb.Collection): The collection to index the new documents into.
+
+        Returns:
+            dict: A dictionary containing the indexed documents based on the source type.
+        """
+        print(f"Before updating: {len(original)}")
+        # Extend the original with the new documents
+        original.extend(new)
+        print(f"After updating: {len(original)}")
+
+        # The embedding function
+        embedding_function = embedding_functions.OpenAIEmbeddingFunction(
+            model_name=embedding_model_name, api_key=api_key
+        )
+
+        # Extract the page content from the document objects
+        documents = [ds.page_content for ds in data_split]
+        # Extract the metadata from the document objects
+        metadatas = [ds.metadata for ds in data_split]
+        # Create embeddings from the page contents
+        embeddings = embedding_function(documents)
+        # Randomly generate UUIDs (chromadb is kinda dumb for not auto-incrementing ids)
+        ids = [str(uuid.uuid4()) for _ in embeddings]
+
+        # Add the new documents into the collection
+        collection.add(
+            documents=documents,
+            embeddings=embeddings,
+            metadatas=metadatas,
+            ids=ids,
+        )
+
+        return original
+
     print(f"Indexing {len(new_sources)} new documents into collection.")
     # Get JSON already saved to be updated with new documents
     with KedroSession.create(project_path=Path.cwd()) as session:
@@ -270,32 +304,9 @@ def index_new_documents(
         except:
             docs_dict = []
 
-        print(f"Before updating: {len(docs_dict)}")
-        # Extend the docs_dict with the new documents
-        docs_dict.extend(new_docs_dict)
-        print(f"After updating: {len(docs_dict)}")
-
-        # The embedding function
-        embedding_function = embedding_functions.OpenAIEmbeddingFunction(
-            model_name=embedding_model_name, api_key=api_key
+        docs_dict = _index_new_documents(
+            docs_dict, new_docs_dict, data_split, collection
         )
-
-        # Extract the page content from the document objects
-        documents = [ds.page_content for ds in data_split]
-        # Extract the metadata from the document objects
-        metadatas = [ds.metadata for ds in data_split]
-        # Create embeddings from the page contents
-        embeddings = embedding_function(documents)
-        # Randomly generate UUIDs (chromadb is kinda dumb for not auto-incrementing ids)
-        ids = [str(uuid.uuid4()) for _ in embeddings]
-
-        collection.add(
-            documents=documents,
-            embeddings=embeddings,
-            metadatas=metadatas,
-            ids=ids,
-        )
-
         return docs_dict
 
     elif source_type.value == "pdf":
@@ -308,23 +319,9 @@ def index_new_documents(
         except:
             pdfs_dict = []
 
-        print(f"Before updating: {len(pdfs_dict)}")
-        # Extend the docs_dict with the new documents
-        pdfs_dict.extend(new_pdfs_dict)
-        print(f"After updating: {len(pdfs_dict)}")
-
-        embedding_function = embedding_functions.OpenAIEmbeddingFunction(
-            model_name=embedding_model_name, api_key=api_key
+        pdfs_dict = _index_new_documents(
+            pdfs_dict, new_pdfs_dict, all_data_splits, collection
         )
-        documents = [ds.page_content for ds in all_data_splits]
-        metadatas = [ds.metadata for ds in all_data_splits]
-        embeddings = embedding_function(documents)
-        ids = [str(uuid.uuid4()) for _ in embeddings]
-
-        collection.add(
-            documents=documents, embeddings=embeddings, metadatas=metadatas, ids=ids
-        )
-
         return pdfs_dict
 
 

@@ -5,8 +5,10 @@ generated using Kedro 0.19.3
 
 from kedro.pipeline import Pipeline, node, pipeline
 
-from healthcare_chatbot.pipelines.data_processing.nodes import (index_pdfs,
-                                                                index_websites)
+from healthcare_chatbot.pipelines.data_processing.nodes import (
+    index_pdfs,
+    index_websites,
+)
 
 
 def create_pipeline(**kwargs) -> Pipeline:

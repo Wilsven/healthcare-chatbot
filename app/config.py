@@ -12,7 +12,6 @@ from langchain_community.vectorstores import Chroma
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_openai.embeddings import OpenAIEmbeddings
 
-
 conf_path = str(str(Path(os.getcwd()) / settings.CONF_SOURCE))
 conf_loader = OmegaConfigLoader(conf_source=conf_path)
 credentials = conf_loader["credentials"]
@@ -80,7 +79,8 @@ qa = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type="stuff",
     retriever=store.as_retriever(
-        search_type="mmr", search_kwargs={"k": 5, "fetch_k": 20, "lambda_mult": 0.5}
+        search_type="mmr", search_kwargs={"k": 3, "fetch_k": 20, "lambda_mult": 0.5}
     ),
     chain_type_kwargs={"prompt": PROMPT},
+    return_source_documents=True,
 )

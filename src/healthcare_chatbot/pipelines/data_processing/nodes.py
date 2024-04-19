@@ -15,8 +15,13 @@ from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 
 from healthcare_chatbot.pipelines.data_processing.utils import (
-    SourceType, check_sources, index_new_documents, pdfs_to_docs, update_json,
-    websites_to_docs)
+    SourceType,
+    check_sources,
+    index_new_documents,
+    pdfs_to_docs,
+    update_json,
+    websites_to_docs,
+)
 
 
 def index_websites(
@@ -101,9 +106,7 @@ def index_websites(
         )
 
         # Check for new websites to index
-        collection, new_websites = check_sources(
-            websites, SourceType.WEBSITE, client, collection_name
-        )
+        collection, new_websites = check_sources(websites, client, collection_name)
 
         # If there are new websites, index them into the collection
         if new_websites is not None:
@@ -199,9 +202,7 @@ def index_pdfs(
         )
 
         # Check for new PDFs to index
-        collection, new_pdfs = check_sources(
-            pdfs_paths, SourceType.PDF, client, collection_name
-        )
+        collection, new_pdfs = check_sources(pdfs_paths, client, collection_name)
 
         # If there are new PDFs, index them into the collection
         if new_pdfs is not None:
