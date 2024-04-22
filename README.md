@@ -87,7 +87,11 @@ The dependencies are located in `requirements.txt` for `pip` installation.
 pip install -r requirements.txt
 ```
 
-### 3. Start the Application (FastAPI) <a id="start-the-application"></a>
+### 3. Set Up Configurations <a id="set-up-configurations"></a>
+
+Refer to the [README.md](conf/README.md) in the [`conf`](conf/) directory to set up the credentials and configurations required to run this project.
+
+### 4. Start the Application (FastAPI) <a id="start-the-application"></a>
 
 Before we run the pipelines, start the application so our [`data_science`](#data_science) will be able to call the `/chat` API endpoint to get the response from the chatbot.
 
