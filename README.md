@@ -206,6 +206,42 @@ The table below shows the first five queries which will act as the inputs to the
 
 ### [`evaluations.json`](data/07_model_output/evaluations.json) <a id="evaluations"></a>
 
+After running the `model_evaluation` pipeline, the evaluations will be outputted into a `evaluations.csv` file located in the [`07_model_output`](data/07_model_output) folder in the data directory.
+
+The JSON below is an example of the structure of an evaluation result:
+
+```json
+[
+    {
+    "query": "What is gestational diabetes and how is it diagnosed?",
+    "response": "Gestational diabetes (GDM) is diabetes that is diagnosed during the second or third trimester of pregnancy...",
+    "page_content": "...",
+    "coherence": {
+      "reasoning": "The criterion for this assessment is coherence, which involves the submission being well-structured, organized, and making sense as a whole. ...",
+      "value": "Y",
+      "score": 1
+    },
+    "helpfulness": {
+      "reasoning": "The criterion for this task is \"helpfulness\". ...",
+      "value": "Y",
+      "score": 1
+    },
+    "correctness": {
+      "reasoning": "The criterion for this task is the correctness of the submission. The submission should be accurate, factual, and correct. ...",
+      "value": "Y",
+      "score": 1
+    },
+    "relevance": {
+      "reasoning": "The criterion for this task is to assess whether the submission is referring to a real quote from the text. ...",
+      "value": "Y",
+      "score": 1
+    }
+  }, ...
+]
+```
+
+> **Note:** Due to brevity, details aren't included in the example above. For more information on the evaluation results, refer to the [`evaluations.json`](data/07_model_output/evaluations.json)
+
 ## Rules and Guidelines <a id="rules-and-guidelines"></a>
 
 In order to get the best out of the template:
