@@ -1,0 +1,33 @@
+# This is a boilerplate parameters config generated for pipeline 'model_evaluation'
+# using Kedro 0.19.3.
+#
+# Documentation for this file format can be found in "Parameters"
+# Link: https://docs.kedro.org/en/0.19.3/configuration/parameters.html
+eval_api:
+  domain: http://127.0.0.1:8000
+  eval_endpoint: /evaluate
+
+# Simply change this between "openai" or "anthropic" to use
+# either GPT-4 or Claude 3 Sonnet model respectively
+# to evaluate the responses
+eval_model: openai
+
+# Change this if you'd want to use another model for evaluation
+# For example, you can swap out Claude 3 Sonnet with Claude 3 Opus
+# or Claude 3 Haiku should you prioritize a higher capaibility vs speed respectively
+eval_model_name:
+  openai: gpt-4
+  anthropic: claude-3-sonnet-20240229
+
+# The criterion to evaluate
+# Refer here for more info: https://python.langchain.com/docs/guides/productionization/evaluation/string/criteria_eval_chain/
+criterion:
+  - coherence
+  - helpfulness
+
+labelled_criterion:
+  - correctness
+  - relevance
+
+start_eval_index: 7
+end_eval_index: 9

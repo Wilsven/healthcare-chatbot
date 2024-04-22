@@ -7,7 +7,9 @@ from kedro.config import OmegaConfigLoader
 from kedro.framework.project import settings
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import RetrievalQA
+from langchain.evaluation import load_evaluator
 from langchain.prompts import PromptTemplate
+from langchain_anthropic import ChatAnthropic
 from langchain_community.vectorstores import Chroma
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_openai.embeddings import OpenAIEmbeddings
@@ -18,12 +20,19 @@ credentials = conf_loader["credentials"]
 
 # Load the OpenAI API key
 OPENAI_API_KEY = credentials["OPENAI_API_KEY"]
+ANTHROPIC_API_KEY = credentials["ANTHROPIC_API_KEY"]
 
 # Load the configurations required for the embedding model and LLM
 embedding_model_name = conf_loader["parameters"]["embedding_model_name"]
 model_name = conf_loader["parameters"]["model_name"]
 temperature = conf_loader["parameters"]["temperature"]
 max_tokens = conf_loader["parameters"]["max_tokens"]
+
+# Load configurations required for evaluation model
+eval_model = conf_loader["parameters"]["eval_model"]
+eval_model_name = conf_loader["parameters"]["eval_model_name"][eval_model]
+criterion = conf_loader["parameters"]["criterion"]
+labelled_criterion = conf_loader["parameters"]["labelled_criterion"]
 
 # Specify path to vector store
 persist_directory = conf_loader["parameters"]["vector_db"]["path"]
@@ -64,7 +73,7 @@ The context are multiple articles containing healthcare facts, information, and 
 company. You should answer readers' queries using only the information from the published articles.
 
 If you don't know the answer, simply state that you don't know. It is not required to acknowledge that information was
-provided in the articles. 
+provided in the articles.
 
 Remember to be appropriate and adopt an empathetic and understanding tone.
 
@@ -84,3 +93,33 @@ qa = RetrievalQA.from_chain_type(
     chain_type_kwargs={"prompt": PROMPT},
     return_source_documents=True,
 )
+
+if eval_model == "openai":
+    evaluation_llm = ChatOpenAI(
+        model_name=eval_model_name,
+        temperature=temperature,
+        openai_api_key=OPENAI_API_KEY,
+    )
+elif eval_model == "anthropic":
+    evaluation_llm = ChatAnthropic(
+        model_name=eval_model_name,
+        temperature=temperature,
+        anthropic_api_key=ANTHROPIC_API_KEY,
+    )
+
+# Create criterion evaluators
+criterion_evaluators = {
+    criteria: load_evaluator("criteria", criteria=criteria, llm=evaluation_llm)
+    for criteria in criterion
+}
+
+# Create labelled criterion evaluators
+labelled_criterion_evaluators = {
+    labelled_criteria: load_evaluator(
+        "labeled_criteria",
+        criteria=labelled_criteria,
+        llm=evaluation_llm,
+        requires_reference=True,
+    )
+    for labelled_criteria in labelled_criterion
+}

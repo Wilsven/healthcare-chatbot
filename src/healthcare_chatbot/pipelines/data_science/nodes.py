@@ -4,14 +4,13 @@ generated using Kedro 0.19.3
 """
 
 from pathlib import Path
-import pandas as pd
-import requests
 
 import matplotlib.pyplot as plt
-from tqdm import tqdm
-from wordcloud import WordCloud, STOPWORDS
-
+import pandas as pd
+import requests
 from kedro.framework.session import KedroSession
+from tqdm import tqdm
+from wordcloud import STOPWORDS, WordCloud
 
 
 def generate_wordcloud(queries_df: pd.DataFrame) -> plt.Figure:
@@ -50,10 +49,22 @@ def generate_wordcloud(queries_df: pd.DataFrame) -> plt.Figure:
 def get_responses(
     queries_df: pd.DataFrame,
     api_params: dict,
-    start_index: int | None = None,
-    end_index: int | None = None,
+    start_index: int,
+    end_index: int,
 ) -> pd.DataFrame:
-    # Get JSON already saved to be updated with new documents
+    """
+    Retrieves responses from an API based on a list of queries.
+
+    Args:
+        queries_df (pd.DataFrame): A DataFrame containing a column of queries.
+        api_params (dict): A dictionary containing the API parameters.
+        start_index (int): The start index of the queries to retrieve.
+        end_index (int): The end index of the queries to retrieve.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the retrieved responses.
+    """
+    # Get dataframe already saved to be updated with new documents
     with KedroSession.create(project_path=Path.cwd()) as session:
         context = session.load_context()
         catalog = context.catalog

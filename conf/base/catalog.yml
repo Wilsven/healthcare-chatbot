@@ -20,6 +20,8 @@ queries_file:
 responses_file:
   type: pandas.CSVDataset
   filepath: data/07_model_output/responses.csv
+  load_args:
+    encoding: latin_1
 
 # Some visualisation reporting to show the
 # most frequent words in the form of a word cloud
@@ -27,3 +29,9 @@ responses_file:
 wordcloud:
   type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/wordcloud.png
+
+# Stores the evaluation results over multiple criterion
+# in a JSON file
+evaluations_file:
+  type: json.JSONDataset
+  filepath: data/07_model_output/evaluations.json
