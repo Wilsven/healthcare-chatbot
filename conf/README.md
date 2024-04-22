@@ -86,6 +86,13 @@ wordcloud:
 evaluations_file:
   type: json.JSONDataset
   filepath: data/07_model_output/evaluations.json
+
+# Some visualisation reporting to show the
+# most evaluation scores for both criterion and
+# labelled criterion
+barplot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/barplot.png
 ```
 
 #### [`parameters.yml`](conf/base/parameters.yml) <a id="parameters"></a>

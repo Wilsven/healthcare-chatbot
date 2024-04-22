@@ -4,6 +4,7 @@ generated using Kedro 0.19.3
 """
 
 from pathlib import Path
+from matplotlib import pyplot as plt
 import pandas as pd
 import requests
 from kedro.framework.session import KedroSession
@@ -82,3 +83,56 @@ def get_evaluations(
         evaluations_file = criterion_responses
 
     return evaluations_file
+
+
+def generate_barplot(
+    evaluations_file: list[dict], criterion: list[str], labelled_criterion: list[str]
+) -> plt.Figure:
+    """
+    Generate a barplot of the mean scores of evaluation criteria over all responses.
+
+    Args:
+        evaluations_file (list[dict]): A list of dictionaries containing evaluation data.
+        criterion (list[str]): A list of strings representing the evaluation criteria.
+        labelled_criterion (list[str]): A list of strings representing the labelled evaluation criteria.
+
+    Returns:
+        plt.Figure: The generated barplot figure.
+    """
+    eval_df = pd.DataFrame(
+        columns=[
+            "queries",
+            "responses",
+            "page_contents",
+            *criterion,
+            *labelled_criterion,
+        ]
+    )
+
+    for i, eval in enumerate(evaluations_file):
+        eval_df.at[i, "queries"] = eval["query"]
+        eval_df.at[i, "responses"] = eval["response"]
+        eval_df.at[i, "page_contents"] = eval["page_content"]
+
+        for criteria in criterion:
+            eval_df.at[i, criteria] = eval[criteria]["score"]
+
+        for labelled_criteria in labelled_criterion:
+            eval_df.at[i, labelled_criteria] = eval[labelled_criteria]["score"]
+
+    eval_df[[*criterion, *labelled_criterion]] = eval_df[
+        [*criterion, *labelled_criterion]
+    ].astype(int)
+
+    meta_df = eval_df[[*criterion, *labelled_criterion]].describe().T
+
+    fig = plt.figure()
+    fig.set_figheight(4.5)
+    fig.set_figwidth(4.5 * 2)
+    plt.barh(meta_df.index[::-1], meta_df["mean"][::-1])
+    plt.xlabel("Mean Scores")
+    plt.ylabel("Criteria")
+    plt.title("Mean Scores of Evaluation Criteria over All Responses")
+    plt.show()
+
+    return fig

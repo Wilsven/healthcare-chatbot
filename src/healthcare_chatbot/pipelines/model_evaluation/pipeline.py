@@ -5,7 +5,10 @@ generated using Kedro 0.19.3
 
 from kedro.pipeline import Pipeline, node, pipeline
 
-from healthcare_chatbot.pipelines.model_evaluation.nodes import get_evaluations
+from healthcare_chatbot.pipelines.model_evaluation.nodes import (
+    generate_barplot,
+    get_evaluations,
+)
 
 
 def create_pipeline(**kwargs) -> Pipeline:
@@ -21,6 +24,16 @@ def create_pipeline(**kwargs) -> Pipeline:
                 ],
                 outputs="evaluations_file",
                 name="get_evaluations_node",
-            )
+            ),
+            node(
+                func=generate_barplot,
+                inputs=[
+                    "evaluations_file",
+                    "params:criterion",
+                    "params:labelled_criterion",
+                ],
+                outputs="barplot",
+                name="generate_barplot_node",
+            ),
         ]
     )

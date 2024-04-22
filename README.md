@@ -1,5 +1,7 @@
 # Healthcare Chatbot <a id="healthcare-chatbot"></a>
 
+![image](docs/external/kedro-pipeline.png)
+
 ## Overview
 
 - [Problem Statement](#problem-statement)
@@ -20,6 +22,7 @@
   - [`responses.csv`](#responses)
 - [Model Evaluation](#model-evaluation)
   - [`evaluations.json`](#evaluations)
+  - [Bar Plot](#bar-plot)
 - [Rules and Guidelines](#rules-and-guidelines)
 
 ## Problem Statement <a id="problem-statement"></a>
@@ -241,6 +244,12 @@ The JSON below is an example of the structure of an evaluation result:
 ```
 
 > **Note:** Due to brevity, details aren't included in the example above. For more information on the evaluation results, refer to the [`evaluations.json`](data/07_model_output/evaluations.json)
+
+### (Optional) Bar Plot <a id="bar-plot"></a>
+
+The bar plot below simply visualises the evaluation scores of both criterion and labelled criterion.
+
+![image](data/08_reporting/barplot.png)
 
 ## Rules and Guidelines <a id="rules-and-guidelines"></a>
 
