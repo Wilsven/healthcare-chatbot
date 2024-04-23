@@ -94,7 +94,7 @@ Refer to the [README.md](conf/README.md) in the [`conf`](conf/) directory to set
 
 ### 4. Start the Application (FastAPI) <a id="start-the-application"></a>
 
-Before we run the pipelines, start the application so our [`data_science`](#data_science) pipeline will be able to call the `/chat` API endpoint to get a response from the chatbot.
+Before we run the pipelines, start the application so our [`data_science`](#data-science) pipeline will be able to call the `/chat` API endpoint to get a response from the chatbot.
 
 ```bash
 uvicorn app.main:app --reload --port=8000
@@ -102,7 +102,7 @@ uvicorn app.main:app --reload --port=8000
 
 We expose the port 8000 and this is where we will access the API endpoints.
 
-> **Note:** If you just want to run the [`data_processing`](#data_processing) pipeline, you can skip this step. This step is only necessary for the [`data_science`](#data_science) pipeline.
+> **Note:** If you just want to run the [`data_processing`](#data-processing) pipeline, you can skip this step. This step is only necessary for the [`data_science`](#data-science) pipeline.
 
 ## (Optional) Testing with Postman <a id="testing-with-postman"></a>
 
@@ -217,7 +217,7 @@ The image below shows a high level overview of the model evaluation pipeline.
 
 ### [`responses.csv`](data/07_model_output/responses.csv) <a id="responses"></a>
 
-After running the [`data_science`](#data_science) pipeline, the responses will be outputted into a [`responses.csv`](data/07_model_output/responses.csv) file located in the [`07_model_output`](data/07_model_output) folder in the data directory.
+After running the [`data_science`](#data-science) pipeline, the responses will be outputted into a [`responses.csv`](data/07_model_output/responses.csv) file located in the [`07_model_output`](data/07_model_output) folder in the data directory.
 
 The table below shows the first five queries which will act as the inputs to the chatbot.
 
@@ -235,7 +235,7 @@ The table below shows the first five queries which will act as the inputs to the
 
 ### [`evaluations.json`](data/07_model_output/evaluations.json) <a id="evaluations"></a>
 
-After running the `model_evaluation` pipeline, the evaluations will be outputted into a [`evaluations.csv`](data/07_model_output/evaluations.json) file located in the [`07_model_output`](data/07_model_output) folder in the data directory.
+After running the [`model_evaluation`](#model-evaluation) pipeline, the evaluations will be outputted into a [`evaluations.csv`](data/07_model_output/evaluations.json) file located in the [`07_model_output`](data/07_model_output) folder in the data directory.
 
 The JSON below is an example of the structure of an evaluation result:
 
