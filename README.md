@@ -74,7 +74,7 @@ To create a virtual environment, use Anaconda (recommended):
 conda create -n <ENV_NAME> python=3.10 -y
 ```
 
-Don't forget to activate the virtual environment before procedding.
+Don't forget to activate the virtual environment before proceeding.
 
 ```bash
 conda activate <ENV_NAME>
@@ -94,7 +94,7 @@ Refer to the [README.md](conf/README.md) in the [`conf`](conf/) directory to set
 
 ### 4. Start the Application (FastAPI) <a id="start-the-application"></a>
 
-Before we run the pipelines, start the application so our [`data_science`](#data_science) will be able to call the `/chat` API endpoint to get the response from the chatbot.
+Before we run the pipelines, start the application so our [`data_science`](#data_science) pipeline will be able to call the `/chat` API endpoint to get a response from the chatbot.
 
 ```bash
 uvicorn app.main:app --reload --port=8000
@@ -134,7 +134,7 @@ The table below shows the first five queries which will act as the inputs to the
 
 ### (Optional) Word Cloud <a id="word-cloud"></a>
 
-The word cloud below simply visualises the prevalent terms among all the queries.
+The word cloud below simply visualises the prevalent terms across all the queries.
 
 ![image](data/08_reporting/wordcloud.png)
 
@@ -160,7 +160,7 @@ The image below shows a high level overview of the data processing pipeline.
 
 ### `data_science` <a id="data-science"></a>
 
-Before running the commands to run the `data_science` pipeline, the data input which consists of the queries to evaluate the chatbot responses has to be provided. Please refer to the [data preparation](#data-preparation) section to learn more.
+Before running the commands to run the `data_science` pipeline, the input data which consists of the queries to evaluate the chatbot responses has to be provided. Please refer to the [Data Preparation](#data-preparation) section to learn more.
 
 This runs the `data_science` pipeline which calls the `/chat` API endpoint with a payload containing the query. The response contains the chatbot's response as well as various metadata.
 
@@ -174,11 +174,32 @@ The image below shows a high level overview of the data science pipeline.
 
 ![image](docs/external/data_science.png)
 
+Here is the prompt template used:
+
+```python
+template = """
+You are a helpful conversational chatbot. Your goal is to provide accurate and helpful information about healthcare.
+You should answer user inquiries based on the context provided and avoid making up answers.
+
+The context are multiple articles containing healthcare facts, information, and tips published by a local healthcare
+company. You should answer readers' queries using only the information from the published articles.
+
+If you don't know the answer, simply state that you don't know. It is not required to acknowledge that information was
+provided in the articles.
+
+Remember to be appropriate and adopt an empathetic and understanding tone.
+
+{context}
+=========
+Question: {question}
+"""
+```
+
 > **❗IMPORTANT:** For more information on configurations, refer to the [parameters_data_science](conf/README.md#parameters_data_science) section which descibes the configurations in detail.
 
 ### `model_evaluation` <a id="model-evaluation"></a>
 
-This runs the `model_evaluation` pipeline which calls the `/evaluate` API endpoint with a payload containing the query, response and page content (as reference). The response contains the model's evaluation criterions.
+This runs the `model_evaluation` pipeline which calls the `/evaluate` API endpoint with a payload containing the query, response and page content (as reference). The response (the one returned, not the one in the payload) contains the model's evaluation criterions.
 
 You can run the `model_evaluation` pipeline by running the following command:
 
@@ -194,7 +215,7 @@ The image below shows a high level overview of the model evaluation pipeline.
 
 ## Model Output <a id="model-output"></a>
 
-### `responses.csv` <a id="responses"></a>
+### [`responses.csv`](data/07_model_output/responses.csv) <a id="responses"></a>
 
 After running the [`data_science`](#data_science) pipeline, the responses will be outputted into a [`responses.csv`](data/07_model_output/responses.csv) file located in the [`07_model_output`](data/07_model_output) folder in the data directory.
 
@@ -208,13 +229,13 @@ The table below shows the first five queries which will act as the inputs to the
 | What is pre-diabetes and how does it differ from type 2 diabetes?        | Pre-diabetes is a condition where blood sugar levels are higher than normal but not high enough to be diagnosed with diabetes. It puts individuals at an increased risk of developing Type 2 diabetes. Making lifestyle changes such as healthy eating can help delay the progression to diabetes or even reverse pre-diabetes. People with pre-diabetes usually do not have symptoms and the only way to diagnose it is through blood tests. Type 2 diabetes, on the other hand, may not have obvious symptoms or they can be easily missed. If ignored, it can lead to serious complications such as Hyperosmolar Hyperglycaemic Syndrome. Type 2 diabetes typically has a slower onset compared to Type 1 diabetes, which has a fast onset often over a few days. Ignoring symptoms of Type 2 diabetes can lead to serious complications like Hyperosmolar Hyperglycaemic Syndrome.   |
 | What are the potential health risks associated with having pre-diabetes? | Potential health risks associated with having pre-diabetes include high blood sugar, high blood pressure, and high blood cholesterol which can damage blood vessels. This damage may lead to complications such as nerve damage (neuropathy), stroke, heart disease, circulatory problems, loss of feeling in the feet, increased risk of foot ulcers and infections, eye disease, and reduced kidney function. It is important to monitor and manage pre-diabetes to prevent these complications.                                                                                                                                                                                                                                                                                                                                                                                       |
 
-> **Note:** The `responses.csv` also stores the document's page content and source the chatbot uses as context. For more information on the responses and metdata returned, refer to the [`responses.csv`](data/07_model_output/responses.csv)
+> **Note:** The `responses.csv` also stores the document's page content and source the chatbot used as context. For more information on the responses and metdata returned, refer to the [`responses.csv`](data/07_model_output/responses.csv)
 
 ## Model Evaluation <a id="model-evaluation"></a>
 
 ### [`evaluations.json`](data/07_model_output/evaluations.json) <a id="evaluations"></a>
 
-After running the `model_evaluation` pipeline, the evaluations will be outputted into a `evaluations.csv` file located in the [`07_model_output`](data/07_model_output) folder in the data directory.
+After running the `model_evaluation` pipeline, the evaluations will be outputted into a [`evaluations.csv`](data/07_model_output/evaluations.json) file located in the [`07_model_output`](data/07_model_output) folder in the data directory.
 
 The JSON below is an example of the structure of an evaluation result:
 
