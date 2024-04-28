@@ -288,7 +288,7 @@ def index_new_documents(
 
         return original
 
-    print(f"Indexing {len(new_sources)} new documents into collection.")
+    print(f"Indexing {len(new_sources)} new sources into collection.")
     # Get JSON already saved to be updated with new documents
     with KedroSession.create(project_path=Path.cwd()) as session:
         context = session.load_context()

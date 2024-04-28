@@ -96,6 +96,8 @@ def index_websites(
             persist_directory=str(Path(os.getcwd()) / db_path),
         )
 
+        print(f"Indexing {len(docs_dict)} documents from website(s).")
+
         return docs_dict
 
     # If the collection exists, we want to check if there are
@@ -121,10 +123,14 @@ def index_websites(
                 OPENAI_API_KEY,
             )
 
+            print(f"Indexing {len(docs_dict)} documents from website(s).")
+
             return docs_dict
 
         # If there aren't any new websites to index, we can skip to avoid repeated indexing
         else:
+            print(f"No new documents to index for websites.")
+
             docs_dict = update_json(SourceType.WEBSITE)
             return docs_dict
 
@@ -192,6 +198,8 @@ def index_pdfs(
             persist_directory=str(Path(os.getcwd()) / db_path),
         )
 
+        print(f"Indexing {len(pdfs_dict)} documents from PDF(s).")
+
         return pdfs_dict
 
     # If the collection exists, we want to check if there are
@@ -217,9 +225,13 @@ def index_pdfs(
                 OPENAI_API_KEY,
             )
 
+            print(f"Indexing {len(pdfs_dict)} documents from PDF(s).")
+
             return pdfs_dict
 
         # If there aren't any new PDFs to index, we can skip to avoid repeated indexing
         else:
+            print(f"No new documents to index for PDFs.")
+
             pdfs_dict = update_json(SourceType.PDF)
             return pdfs_dict
